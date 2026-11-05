@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.user_auth_schema import WxLoginRequest, UserInfoUpdateRequest
-from core.auth import create_access_token, get_current_user_openid
+from backend.app.schemas.user_auth_schema import WxLoginRequest, UserInfoUpdateRequest
+from backend.app.core.security import create_access_token
+from backend.app.core.auth import get_current_user_openid
 
 router = APIRouter(prefix="/api/user", tags=["用户认证模块"])
 
