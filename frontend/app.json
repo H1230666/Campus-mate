@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/square/index",
+    "pages/publish/index",
     "pages/invitation/index"
   ],
   "window": {
