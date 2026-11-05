@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from models.invite import Invite, InviteJoin, InviteStatus
-from core.deps import get_current_user, CurrentUser
-from core.database import get_db
+from backend.models.invite import Invite, InviteJoin, InviteStatus
+from backend.core.deps import get_current_user, CurrentUser
+from backend.core.database import get_db
 
 router = APIRouter(prefix="/invite", tags=["邀约模块"])
 
@@ -44,3 +44,4 @@ def join_invite(
             "status": invite.status
         }
     }
+
