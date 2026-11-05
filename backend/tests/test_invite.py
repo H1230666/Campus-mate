@@ -1,4 +1,5 @@
-from models.invite import Invite, InviteStatus
+from backend.models.invite import Invite, InviteStatus
+
 
 def test_invite_auto_full():
     """人数到达上限自动切换为已满"""
