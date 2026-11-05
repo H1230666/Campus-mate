@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Enum
-from core.database import Base
+from backend.core.database import Base
 import enum
 
 class InviteStatus(str, enum.Enum):
