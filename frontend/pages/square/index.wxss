@@ -66,3 +66,16 @@
 .state-more {
   padding: 40rpx 0;
 }
+
+.publish-fab {
+  position: fixed;
+  right: 32rpx;
+  bottom: calc(48rpx + env(safe-area-inset-bottom));
+  padding: 20rpx 36rpx;
+  border-radius: 48rpx;
+  background-color: #2b6de8;
+  color: #fff;
+  font-size: 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(43, 109, 232, 0.3);
+  z-index: 10;
+}
