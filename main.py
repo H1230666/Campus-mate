@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
+from core.exception_handler import register_exception_handler
 
 app = FastAPI(title="校园搭子小程序后端")
-
+register_exception_handler(app)
 # 内存模拟用户表
 user_db = [
     {"id": 1, "account": "2026001", "password": "123456", "nickname": "小搭子A"},
