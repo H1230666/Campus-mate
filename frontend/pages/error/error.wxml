@@ -1,0 +1,7 @@
+<view class="error-wrap">
+  <view class="error-icon">😥</view>
+  <view class="error-title">{{errorTitle}}</view>
+  <view class="error-desc">{{errorDesc}}</view>
+  <button bindtap="onRetry" class="retry-btn">点击重试</button>
+  <button bindtap="backHome" class="back-btn">返回首页</button>
+</view>
