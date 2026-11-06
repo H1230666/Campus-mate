@@ -2,9 +2,10 @@
 
 from fastapi import FastAPI
 
-from app.routers import square
+from app.routers import publish, square
 
 app = FastAPI(title="Campus-mate API", version="0.1.0-alpha")
+app.include_router(publish.router)
 app.include_router(square.router)
 
 
