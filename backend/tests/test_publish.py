@@ -154,3 +154,18 @@ def test_description_too_long_rejected():
     )
     assert response.status_code == 422
     assert ("body", "description") in error_fields(response)
+
+
+def test_publish_clears_existing_draft():
+    saved = client.put(
+        "/api/invitations/draft",
+        json={"title": "还没想好的搭子"},
+        headers=HEADERS,
+    )
+    assert saved.status_code == 200
+
+    client.post("/api/invitations", json=make_payload(), headers=HEADERS)
+
+    draft = client.get("/api/invitations/draft", headers=HEADERS)
+    assert draft.status_code == 200
+    assert draft.json() is None
