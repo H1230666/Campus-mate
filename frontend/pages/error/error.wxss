@@ -1,0 +1,30 @@
+.error-wrap {
+  padding: 120rpx 40rpx;
+  text-align: center;
+}
+.error-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+.error-title {
+  font-size: 34rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+.error-desc {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 80rpx;
+}
+.retry-btn {
+  width: 300rpx;
+  background: #3677ff;
+  color: #fff;
+  margin: 0 auto 20rpx;
+}
+.back-btn {
+  width: 300rpx;
+  border: 1rpx solid #3677ff;
+  color: #3677ff;
+  margin: 0 auto;
+}
