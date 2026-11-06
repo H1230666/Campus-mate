@@ -1,0 +1,164 @@
+.page {
+  padding: 24rpx 24rpx 220rpx;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 24rpx;
+}
+
+.field {
+  margin-bottom: 28rpx;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field-label {
+  font-size: 26rpx;
+  color: #555;
+  margin-bottom: 14rpx;
+}
+
+.required {
+  color: #e5484d;
+  margin-right: 6rpx;
+}
+
+.control {
+  background-color: #f7f8fa;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  min-height: 44rpx;
+  line-height: 44rpx;
+  color: #222;
+}
+
+.control.placeholder,
+.picker.placeholder {
+  color: #aaa;
+}
+
+.row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.field-error {
+  color: #e5484d;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+}
+
+.stepper-btn {
+  width: 64rpx;
+  height: 64rpx;
+  line-height: 60rpx;
+  text-align: center;
+  border-radius: 12rpx;
+  background-color: #f0f3f8;
+  color: #2b6de8;
+  font-size: 36rpx;
+}
+
+.stepper-btn.disabled {
+  color: #c4c8cf;
+}
+
+.stepper-value {
+  min-width: 88rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.stepper-hint {
+  margin-left: 16rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.textarea {
+  width: auto;
+  height: 180rpx;
+  background-color: #f7f8fa;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+}
+
+.counter {
+  text-align: right;
+  color: #aaa;
+  font-size: 24rpx;
+  margin-top: 8rpx;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  background-color: #fff;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.draft-tip {
+  text-align: center;
+  color: #2b6de8;
+  font-size: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  line-height: 84rpx;
+  height: 84rpx;
+  padding: 0;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-ghost {
+  background-color: #f0f3f8;
+  color: #2b6de8;
+}
+
+.btn-primary {
+  background-color: #2b6de8;
+  color: #fff;
+}
+
+.btn-primary[disabled] {
+  background-color: #b9cdf7;
+  color: #fff;
+}
