@@ -1,0 +1,20 @@
+<view class="page">
+  <view class="card" wx:if="{{!loading}}">
+    <image class="avatar" src="{{avatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+    <view class="nickname">{{nickname}}</view>
+    <view class="openid">openid：{{openid}}</view>
+
+    <view class="section-title">兴趣标签</view>
+    <view class="tags">
+      <text class="tag" wx:for="{{tags}}" wx:key="*this">{{item}}</text>
+      <text class="tag empty" wx:if="{{tags.length === 0}}">还没有标签</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:else>加载中…</view>
+
+  <view class="actions">
+    <button class="btn primary" bindtap="goEdit">编辑资料</button>
+    <button class="btn" bindtap="logout">退出登录</button>
+  </view>
+</view>
