@@ -17,29 +17,30 @@ def register_exception_handler(app: FastAPI):
             }
         )
 
-    # 参数校验异常
-    @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError):
-        return JSONResponse(
-            status_code=200,
-            content={
-                "code": ErrorCode.PARAM_VALIDATE_ERROR,
-                "msg": "参数校验失败",
-                "data": exc.errors()
-            }
-        )
+ # 参数校验异常
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "code": ErrorCode.PARAM_VALIDATE_ERROR,
+            "msg": "参数校验失败",
+            "data": exc.errors()
+        }
+    )
 
-    # HTTP异常
-    @app.exception_handler(StarletteHTTPException)
-    async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-        return JSONResponse(
-            status_code=200,
-            content={
-                "code": exc.status_code,
-                "msg": exc.detail,
-                "data": None
-            }
-        )
+# HTTP异常
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "code": exc.status_code,
+            "msg": exc.detail,
+            "data": None
+        }
+    )
+
 
     # 全局兜底未知异常
     @app.exception_handler(Exception)
