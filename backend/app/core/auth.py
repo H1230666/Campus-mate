@@ -6,8 +6,24 @@ from datetime import UTC, datetime, timedelta
 from fastapi import Header, HTTPException, status
 from jose import JWTError, jwt
 
-# 密钥从环境变量读取，仓库里不留真实密钥；本地未配置时用开发默认值。
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-insecure-secret")
+APP_ENV = os.getenv("APP_ENV", "dev").strip().lower()
+MIN_SECRET_LENGTH = 32
+DEV_FALLBACK_SECRET = "dev-only-insecure-secret"
+
+
+def _load_secret_key() -> str:
+    """读取签名密钥：非 dev 环境缺失或过短时直接终止启动，避免 token 被伪造。"""
+    secret = (os.getenv("AUTH_SECRET") or "").strip()
+    if not secret:
+        if APP_ENV == "dev":
+            return DEV_FALLBACK_SECRET
+        raise RuntimeError("AUTH_SECRET 未配置：非 dev 环境必须通过环境变量提供签名密钥")
+    if len(secret) < MIN_SECRET_LENGTH:
+        raise RuntimeError(f"AUTH_SECRET 至少需要 {MIN_SECRET_LENGTH} 位，当前 {len(secret)} 位")
+    return secret
+
+
+SECRET_KEY = _load_secret_key()
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "120"))
 

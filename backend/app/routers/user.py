@@ -1,16 +1,27 @@
 """用户认证与个人信息接口。"""
 
-from fastapi import APIRouter, Depends
+import os
+
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.auth import create_access_token, get_current_user_openid
 from app.schemas.user_auth_schema import UserInfoUpdateRequest, WxLoginRequest
 
 router = APIRouter(prefix="/api/user", tags=["用户认证模块"])
 
+# 微信登录目前把前端 code 直接当 openid（mock），仅 dev 环境开放，
+# 避免任意字符串都能换到合法登录态。
+MOCK_WX_LOGIN = os.getenv("APP_ENV", "dev").strip().lower() == "dev"
+
 
 @router.post("/wx-login", summary="微信小程序授权登录")
 async def wx_login(req: WxLoginRequest) -> dict:
-    # 真实环境需要拿 code 调微信接口换 openid，这里先用 code 代替
+    if not MOCK_WX_LOGIN:
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail="微信登录尚未接入 jscode2session，暂不可用",
+        )
+    # TODO(#2): 用 code 调微信 jscode2session 换取真实 openid 后再签发 token。
     openid = req.code
     return {
         "code": 200,
