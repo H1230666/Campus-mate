@@ -1,8 +1,8 @@
 """
 测试邀约人数满员自动切换状态
 """
-import sys
 from pathlib import Path
+import sys
 from fastapi.testclient import TestClient
 
 # 把backend根目录加入搜索路径
