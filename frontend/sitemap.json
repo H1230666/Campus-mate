@@ -1,4 +1,9 @@
 {
   "desc": "小程序sitemap配置",
-  "rules": []
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
 }

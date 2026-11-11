@@ -1,0 +1,118 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">基本信息</view>
+
+    <view class="field">
+      <view class="field-label"><text class="required">*</text>标题</view>
+      <input
+        class="control"
+        value="{{form.title}}"
+        maxlength="30"
+        placeholder="一句话说清楚约什么，例如：周五晚图书馆刷题"
+        bindinput="onTitleInput"
+      />
+      <view class="field-error" wx:if="{{errors.title}}">{{errors.title}}</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label"><text class="required">*</text>搭子类型</view>
+      <picker
+        mode="selector"
+        range="{{types}}"
+        range-key="label"
+        value="{{typeIndex}}"
+        bindchange="onTypeChange"
+      >
+        <view class="control picker {{typeLabel ? '' : 'placeholder'}}">
+          {{typeLabel || '请选择类型'}}
+        </view>
+      </picker>
+      <view class="field-error" wx:if="{{errors.type}}">{{errors.type}}</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label"><text class="required">*</text>集合地点</view>
+      <input
+        class="control"
+        value="{{form.location}}"
+        maxlength="50"
+        placeholder="例如：东区体育馆"
+        bindinput="onLocationInput"
+      />
+      <view class="field-error" wx:if="{{errors.location}}">{{errors.location}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">时间与人数</view>
+
+    <view class="field">
+      <view class="field-label"><text class="required">*</text>开始时间</view>
+      <view class="row">
+        <picker
+          class="flex-1"
+          mode="date"
+          value="{{form.date}}"
+          start="{{today}}"
+          end="{{maxDate}}"
+          bindchange="onDateChange"
+        >
+          <view class="control picker {{form.date ? '' : 'placeholder'}}">
+            {{form.date || '选择日期'}}
+          </view>
+        </picker>
+        <picker class="flex-1" mode="time" value="{{form.time}}" bindchange="onTimeChange">
+          <view class="control picker">{{form.time || '选择时间'}}</view>
+        </picker>
+      </view>
+      <view class="field-error" wx:if="{{errors.date || errors.time}}">
+        {{errors.date || errors.time}}
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">招募人数上限</view>
+      <view class="stepper">
+        <view
+          class="stepper-btn {{form.maxCount <= 2 ? 'disabled' : ''}}"
+          data-delta="-1"
+          bindtap="changeCount"
+        >-</view>
+        <text class="stepper-value">{{form.maxCount}}</text>
+        <view
+          class="stepper-btn {{form.maxCount >= 20 ? 'disabled' : ''}}"
+          data-delta="1"
+          bindtap="changeCount"
+        >+</view>
+        <text class="stepper-hint">含发起人</text>
+      </view>
+      <view class="field-error" wx:if="{{errors.maxCount}}">{{errors.maxCount}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">补充说明</view>
+    <textarea
+      class="textarea"
+      value="{{form.description}}"
+      maxlength="500"
+      placeholder="补充集合方式、水平要求等（选填）"
+      bindinput="onDescriptionInput"
+    />
+    <view class="counter">{{descriptionLength}}/500</view>
+    <view class="field-error" wx:if="{{errors.description}}">{{errors.description}}</view>
+  </view>
+
+  <view class="footer">
+    <view class="draft-tip" wx:if="{{draftTip}}">{{draftTip}}</view>
+    <view class="footer-actions">
+      <button class="btn btn-ghost" bindtap="onSaveDraft">存草稿</button>
+      <button
+        class="btn btn-primary"
+        disabled="{{!canSubmit || submitting}}"
+        loading="{{submitting}}"
+        bindtap="onSubmit"
+      >发布搭子</button>
+    </view>
+  </view>
+</view>
