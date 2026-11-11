@@ -1,31 +1,64 @@
-"""
-测试邀约人数满员自动切换状态
-"""
-# noqa: I001
-import sys
-from pathlib import Path
+"""邀约报名：满员自动切换状态、人数上限控制。"""
 
+from datetime import UTC, datetime, timedelta
+
+import pytest
 from fastapi.testclient import TestClient
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from main import app
+from app.main import app
+from app.repositories import invitation_repo
 
 client = TestClient(app)
 
-def test_join_invite_auto_full():
-    """测试：加入后人数达到上限，自动变为已满状态"""
-    resp1 = client.post("/invite/join", json={"invite_id": 1, "user_id": 2})
+
+@pytest.fixture(autouse=True)
+def clean_store():
+    invitation_repo.reset_store()
+    yield
+    invitation_repo.reset_store()
+
+
+def _publish(max_count: int) -> int:
+    """发布一条指定人数上限的邀约，返回其 id。"""
+    resp = client.post(
+        "/api/invitations",
+        json={
+            "title": "图书馆自习搭子",
+            "type": "study",
+            "location": "图书馆三楼自习区",
+            "start_time": (datetime.now(UTC) + timedelta(days=1)).isoformat(),
+            "max_count": max_count,
+        },
+        headers={"X-User-Id": "9001"},
+    )
+    assert resp.status_code == 201
+    return resp.json()["id"]
+
+
+def test_join_auto_full_and_reject_extra():
+    invitation_id = _publish(max_count=3)
+
+    # 第 2 人加入：未达上限，仍为招募中
+    resp1 = client.post(
+        f"/api/invitations/{invitation_id}/join", headers={"X-User-Id": "9002"}
+    )
     assert resp1.status_code == 200
     data1 = resp1.json()
-    assert data1["invite"]["current_count"] == 2
-    assert data1["invite"]["status"] == "recruiting"
+    assert data1["current_count"] == 2
+    assert data1["status"] == "recruiting"
 
-    resp2 = client.post("/invite/join", json={"invite_id": 1, "user_id": 3})
+    # 第 3 人加入：达到上限，自动置为已满
+    resp2 = client.post(
+        f"/api/invitations/{invitation_id}/join", headers={"X-User-Id": "9003"}
+    )
     assert resp2.status_code == 200
     data2 = resp2.json()
-    assert data2["invite"]["current_count"] == 3
-    assert data2["invite"]["status"] == "full"
+    assert data2["current_count"] == 3
+    assert data2["status"] == "full"
 
-    resp3 = client.post("/invite/join", json={"invite_id": 1, "user_id": 4})
+    # 第 4 人再加入：拒绝并提示名额已满
+    resp3 = client.post(
+        f"/api/invitations/{invitation_id}/join", headers={"X-User-Id": "9004"}
+    )
     assert resp3.status_code == 400
     assert "名额已满" in resp3.json()["detail"]

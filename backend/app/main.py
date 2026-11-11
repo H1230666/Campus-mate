@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from app.routers import draft, publish, square, user
+from app.routers import draft, join, publish, square, user
 
 app = FastAPI(title="Campus-mate API", version="0.1.0-alpha")
 
@@ -11,6 +11,7 @@ app = FastAPI(title="Campus-mate API", version="0.1.0-alpha")
 app.include_router(publish.router)
 app.include_router(draft.router)
 app.include_router(square.router)
+app.include_router(join.router)
 app.include_router(user.router)
 
 
