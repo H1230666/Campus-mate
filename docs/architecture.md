@@ -120,7 +120,7 @@ flowchart TB
 
 - 小程序端不直接拼 SQL、不信任本地状态：所有写操作都经 `utils/api.js` 统一加身份头、统一处理非 2xx。
 - 路由层只做“HTTP 语义 ↔ 领域对象”的转换：解析路径/请求头、调用服务、返回模型。
-- 服务层承载业务规则（发布后清草稿、草稿合并、状态流转）。
+- 服务层承载业务规则（发布后清草稿（#6）、草稿合并、状态流转）。
 - 仓储层是唯一知道数据存在哪里的地方；Alpha 用列表/字典，v1.0 换 MySQL 时上层零改动。
 
 ### 3.2 目录与职责映射
@@ -137,7 +137,7 @@ Campus-mate/
 │   │   │   └── draft.py            # 草稿箱（B · #6）
 │   │   ├── services/               # 业务层
 │   │   │   ├── square_service.py
-│   │   │   ├── publish_service.py  # 发布后清理草稿（B）
+│   │   │   ├── publish_service.py  # 发布后清理草稿（#6，B）
 │   │   │   └── draft_service.py    # 草稿保存/读取/丢弃（B）
 │   │   ├── repositories/
 │   │   │   └── invitation_repo.py  # 邀约与草稿存储（C 建，B 扩展写接口）
@@ -310,7 +310,7 @@ stateDiagram-v2
 1. 每个用户同时**只保留一份**草稿（`_DRAFTS` 以 `publisher_id` 为键）。
 2. 保存采用**增量合并**：本次未提交的字段保留上次值，显式传空字符串可清空。
 3. 草稿不进入广场、不可被其他用户读取。
-4. 发布成功后自动清除该用户草稿，避免“已发布仍提示继续编辑”。
+4. 发布成功后自动清除该用户草稿（由 #6 的 `publish_service.publish()` 调用 `clear_draft()` 实现），避免“已发布仍提示继续编辑”。
 
 ---
 
@@ -402,7 +402,7 @@ sequenceDiagram
 | 前缀 | `/api`；健康检查 `/health` |
 | 编码 | `application/json; charset=utf-8` |
 | 命名 | 字段 `snake_case`，与 Pydantic 模型一致 |
-| 时间 | ISO-8601，服务端统一存 UTC，客户端负责本地化展示 |
+| 时间 | ISO-8601 **必须带时区**（`Z` 或 `+08:00`）；服务端校验后统一转 UTC 存储，客户端负责本地化展示 |
 | 鉴权 | 目标：`Authorization: Bearer <token>`；Alpha 过渡：`X-User-Id` |
 | 分页 | `page` 从 1 开始，`page_size` 1–50，响应含 `total/page/page_size/list` |
 | 错误 | 4xx/5xx + 结构化错误体；参数错误定位到字段 |
