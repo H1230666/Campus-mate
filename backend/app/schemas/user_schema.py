@@ -10,7 +10,11 @@ PHONE_PATTERN = re.compile(r"^1[3-9]\d{9}$")
 
 
 class UserCreate(BaseModel):
-    """用户注册入参：长度与格式统一在此校验，避免脏数据入库。"""
+    """用户注册入参：长度与格式统一在此校验，避免脏数据入库。
+
+    password 只在本次请求内用于加密，落库一律写 `User.password_hash`，
+    任何位置（日志、响应、数据库）都不出现明文密码。
+    """
 
     username: str = Field(min_length=3, max_length=20, description="用户名，3-20 个字符，仅字母/数字/下划线")
     password: str = Field(min_length=6, max_length=32, description="密码，6-32 个字符，首尾不能有空格")
@@ -50,12 +54,14 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    """用户信息修改入参：全部可选，仅允许修改下列字段。"""
+    """用户自助修改入参：只允许改资料字段。
+
+    管理态字段（is_active 等）不在此暴露，避免普通用户自行解封/停用账号。
+    """
 
     nickname: str | None = Field(default=None, max_length=32, description="昵称")
     phone: str | None = Field(default=None, description="手机号，11 位，1 开头")
     avatar: str | None = Field(default=None, max_length=255, description="头像链接")
-    is_active: bool | None = Field(default=None, description="是否启用")
 
     @field_validator("phone")
     @classmethod
@@ -67,8 +73,14 @@ class UserUpdate(BaseModel):
         return v
 
 
+class AdminUserUpdate(UserUpdate):
+    """管理员修改用户入参：在自助字段基础上追加管理态字段。"""
+
+    is_active: bool | None = Field(default=None, description="是否启用，仅管理员可改")
+
+
 class UserResponse(BaseModel):
-    """用户信息出参：可直接由 ORM 对象转换。"""
+    """用户信息出参：字段与 `models.user.User` 的列一一对应，可直接由 ORM 对象转换。"""
 
     id: int
     username: str
