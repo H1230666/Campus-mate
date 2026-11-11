@@ -7,7 +7,7 @@ import bcrypt
 
 app = FastAPI(title="校园搭子小程序后端")
 register_exception_handler(app)
-
+ 
 # 固定哈希，明文都是123456，不再动态生成
 user_db = [
     {
