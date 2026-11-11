@@ -10,7 +10,7 @@ import pytest
 from fastapi import HTTPException
 from jose import jwt
 
-from app.core.auth import (
+from app.core.security import (
     ALGORITHM,
     SECRET_KEY,
     create_access_token,
