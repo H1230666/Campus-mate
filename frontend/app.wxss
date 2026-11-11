@@ -1,0 +1,22 @@
+page {
+  background-color: #f5f6f8;
+  color: #222;
+  font-size: 28rpx;
+}
+
+.container {
+  padding: 24rpx;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+  color: #999;
+}
+
+.state button {
+  margin-top: 24rpx;
+}
