@@ -206,6 +206,7 @@ Page({
   composeStartTime() {
     const { date, time } = this.data.form
     if (!date || !time) return null
+    // 选择器给的是手机本地时间；toISOString() 统一转成 UTC，后端按 UTC 存储与校验
     const start = new Date(`${date}T${time}:00`)
     return Number.isNaN(start.getTime()) ? null : start
   },
@@ -292,6 +293,10 @@ Page({
   },
 
   handleSubmitError(res) {
+    if (res && res.statusCode === 401) {
+      wx.showToast({ title: '请先登录后再发布', icon: 'none' })
+      return
+    }
     if (res && res.statusCode === 422 && res.data && Array.isArray(res.data.detail)) {
       const errors = {}
       res.data.detail.forEach((item) => {
@@ -330,7 +335,13 @@ Page({
         { method: 'PUT' }
       )
       .then(() => this.setData({ draftTip: '草稿已保存，下次进入会自动恢复' }))
-      .catch(() => this.setData({ draftTip: '已保存到本地，服务端暂不可用' }))
+      .catch((res) => {
+        const tip =
+          res && res.statusCode === 401
+            ? '请先登录后再保存到服务端'
+            : '已保存到本地，服务端暂不可用'
+        this.setData({ draftTip: tip })
+      })
   },
 
   scheduleLocalSave() {
