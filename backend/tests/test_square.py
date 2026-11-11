@@ -60,3 +60,30 @@ def test_filter_by_status():
 def test_filter_invalid_status_is_client_error():
     resp = client.get("/api/invitations", params={"status": "unknown"})
     assert 400 <= resp.status_code < 500
+
+
+def test_filter_by_recruiting_status():
+    resp = client.get("/api/invitations", params={"status": "recruiting"})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["total"] >= 1
+    assert all(item["status"] == "recruiting" for item in data["list"])
+
+
+def test_filter_by_type_and_status_combined():
+    resp = client.get(
+        "/api/invitations", params={"type": "study", "status": "full"}
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["total"] == 1
+    assert data["list"][0]["type"] == "study"
+    assert data["list"][0]["status"] == "full"
+
+
+def test_filter_combined_no_match_returns_empty():
+    resp = client.get(
+        "/api/invitations", params={"type": "travel", "status": "full"}
+    )
+    assert resp.status_code == 200
+    assert resp.json()["list"] == []
