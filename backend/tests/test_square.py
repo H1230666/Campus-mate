@@ -49,3 +49,35 @@ def test_get_invitation_detail():
 def test_get_invitation_not_found():
     resp = client.get("/api/invitations/99999")
     assert resp.status_code == 404
+
+
+def test_list_page_zero_is_rejected():
+    resp = client.get("/api/invitations", params={"page": 0})
+    assert 400 <= resp.status_code < 500
+
+
+def test_list_page_size_one_returns_one_item():
+    resp = client.get("/api/invitations", params={"page": 1, "page_size": 1})
+    assert resp.status_code == 200
+    assert len(resp.json()["list"]) == 1
+
+
+def test_filter_combined_with_pagination():
+    resp = client.get(
+        "/api/invitations", params={"type": "sport", "page": 1, "page_size": 1}
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data["list"]) == 1
+    assert data["list"][0]["type"] == "sport"
+
+
+def test_detail_invalid_id_type_is_client_error():
+    resp = client.get("/api/invitations/not-a-number")
+    assert 400 <= resp.status_code < 500
+
+
+def test_detail_returns_valid_status():
+    resp = client.get("/api/invitations/1")
+    assert resp.status_code == 200
+    assert resp.json()["status"] in ("recruiting", "full")
