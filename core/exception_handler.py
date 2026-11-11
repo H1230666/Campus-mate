@@ -3,6 +3,10 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from .exceptions import BusinessException, ErrorCode
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def register_exception_handler(app: FastAPI):
     # 业务自定义异常
@@ -42,14 +46,20 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     )
 
 
-    # 全局兜底未知异常
-    @app.exception_handler(Exception)
-    async def global_exception_handler(request: Request, exc: Exception):
-        return JSONResponse(
-            status_code=200,
-            content={
-                "code": ErrorCode.INTERNAL_ERROR,
-                "msg": "服务器内部异常",
-                "data": str(exc)
-            }
-        )
+
+
+
+# 全局兜底未知异常
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # 打印完整堆栈到日志
+    logger.exception("服务器未知异常")
+    # 这里你可以用环境变量判断DEBUG，先写简易版本
+    return JSONResponse(
+        status_code=500,
+        content={
+            "code": ErrorCode.INTERNAL_ERROR,
+            "msg": "服务器内部异常",
+            "data": None
+        }
+    )
