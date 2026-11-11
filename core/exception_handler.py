@@ -21,45 +21,40 @@ def register_exception_handler(app: FastAPI):
             }
         )
 
- # 参数校验异常
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return JSONResponse(
-        status_code=422,
-        content={
-            "code": ErrorCode.PARAM_VALIDATE_ERROR,
-            "msg": "参数校验失败",
-            "data": exc.errors()
-        }
-    )
+    # 参数校验异常
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        return JSONResponse(
+            status_code=422,
+            content={
+                "code": ErrorCode.PARAM_VALIDATE_ERROR,
+                "msg": "参数校验失败",
+                "data": exc.errors()
+            }
+        )
 
-# HTTP异常
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "code": exc.status_code,
-            "msg": exc.detail,
-            "data": None
-        }
-    )
+    # Starlette HTTP异常（404/401等）
+    @app.exception_handler(StarletteHTTPException)
+    async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "code": exc.status_code,
+                "msg": exc.detail,
+                "data": None
+            }
+        )
 
+    # 全局兜底未知异常
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        logger.exception("服务器未知异常")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "code": ErrorCode.INTERNAL_ERROR,
+                "msg": "服务器内部异常",
+                "data": None
+            }
+        )
 
-
-
-
-# 全局兜底未知异常
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    # 打印完整堆栈到日志
-    logger.exception("服务器未知异常")
-    # 这里你可以用环境变量判断DEBUG，先写简易版本
-    return JSONResponse(
-        status_code=500,
-        content={
-            "code": ErrorCode.INTERNAL_ERROR,
-            "msg": "服务器内部异常",
-            "data": None
-        }
-    )
