@@ -1,0 +1,42 @@
+<view class="container">
+  <scroll-view class="filter-bar" scroll-x enhanced show-scrollbar="{{false}}">
+    <view
+      wx:for="{{types}}"
+      wx:key="key"
+      class="filter-item {{activeType === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onFilterTap"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view wx:if="{{loading && invitations.length === 0}}" class="state">加载中…</view>
+  <view wx:elif="{{error && invitations.length === 0}}" class="state">
+    <text>网络异常，请稍后重试</text>
+    <button size="mini" bindtap="onRetry">重试</button>
+  </view>
+  <view wx:elif="{{empty && invitations.length === 0}}" class="state">
+    <text>暂时没有符合条件的搭子</text>
+  </view>
+  <block wx:else>
+    <view
+      wx:for="{{invitations}}"
+      wx:key="id"
+      class="card"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="card-head">
+        <text class="card-title">{{item.title}}</text>
+        <text class="card-status {{item.status}}">{{item.status === 'recruiting' ? '招募中' : '已满'}}</text>
+      </view>
+      <view class="card-meta">
+        <text class="tag">{{item.typeLabel}}</text>
+        <text>{{item.location}}</text>
+        <text>{{item.current_count}}/{{item.max_count}}人</text>
+      </view>
+    </view>
+    <view wx:if="{{!hasMore}}" class="state state-more">没有更多了</view>
+  </block>
+
+  <view class="publish-fab" bindtap="goPublish">＋ 发布搭子</view>
+</view>
