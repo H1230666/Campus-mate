@@ -1,0 +1,20 @@
+<view class="container">
+  <view wx:if="{{loading}}" class="state">加载中…</view>
+  <view wx:elif="{{notFound}}" class="state">该邀约不存在或已下线</view>
+  <view wx:elif="{{error}}" class="state">
+    <text>网络异常，请稍后重试</text>
+    <button size="mini" bindtap="onRetry">重试</button>
+  </view>
+  <block wx:else>
+    <view class="card">
+      <view class="title">{{detail.title}}</view>
+      <view class="row"><text class="label">类型</text><text>{{detail.typeLabel}}</text></view>
+      <view class="row"><text class="label">时间</text><text>{{detail.start_time}}</text></view>
+      <view class="row"><text class="label">地点</text><text>{{detail.location}}</text></view>
+      <view class="row"><text class="label">人数</text><text>{{detail.current_count}}/{{detail.max_count}}</text></view>
+      <view class="row"><text class="label">状态</text><text>{{detail.statusLabel}}</text></view>
+      <view class="row"><text class="label">发布者</text><text>#{{detail.publisher_id}}</text></view>
+      <view class="desc">{{detail.description}}</view>
+    </view>
+  </block>
+</view>
