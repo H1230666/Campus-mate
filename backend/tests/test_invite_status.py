@@ -1,9 +1,7 @@
 from backend.main import app
-
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # noqa: I001
 
 client = TestClient(app)
-
 
 
 def test_join_invite_auto_full():
