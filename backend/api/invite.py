@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from threading import Lock
+
 from backend.models.invite import Invite, InviteStatus, JoinInviteReq
+from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/invite", tags=["邀约"])
 
@@ -7,8 +9,6 @@ router = APIRouter(prefix="/invite", tags=["邀约"])
 invite_db: dict[int, Invite] = {
     1: Invite(id=1, title="一起去图书馆", creator_id=1, current_count=1, max_count=3, status=InviteStatus.RECRUITING)
 }
-
-from threading import Lock
 
 invite_lock = Lock()
 
