@@ -1,8 +1,0 @@
-<!-- frontend/pages/error/error.wxml -->
-<view class="error-box">
-  <view class="error-icon">⚠️</view>
-  <view class="error-title">请求出错啦</view>
-  <view class="error-desc">网络异常或者接口暂时无法访问</view>
-  <button bindtap="onRetry" class="retry-btn">重新尝试</button>
-  <button bindtap="goHome" class="home-btn">返回首页</button>
-</view>
