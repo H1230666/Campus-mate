@@ -92,14 +92,16 @@ class InvitationCreate(BaseModel):
     @field_validator("start_time")
     @classmethod
     def validate_start_time(cls, value: datetime) -> datetime:
-        """开始时间必须晚于当前时间，且最多提前 30 天。"""
-        start = value if value.tzinfo is not None else value.replace(tzinfo=UTC)
+        """开始时间必须带时区、晚于当前时间，且最多提前 30 天。"""
+        if value.tzinfo is None:
+            raise ValueError("开始时间必须带时区，例如 2026-11-12T19:00:00+08:00")
+        start = value.astimezone(UTC)
         now = datetime.now(UTC)
         if start <= now:
             raise ValueError("开始时间必须晚于当前时间")
         if start > now + timedelta(days=MAX_AHEAD_DAYS):
             raise ValueError(f"开始时间最多提前 {MAX_AHEAD_DAYS} 天")
-        return start.astimezone(UTC)
+        return start
 
 
 class InvitationDraftIn(BaseModel):
@@ -111,6 +113,14 @@ class InvitationDraftIn(BaseModel):
     start_time: datetime | None = None
     max_count: int | None = Field(default=None, ge=2, le=20)
     description: DescriptionText | None = None
+
+    @field_validator("start_time")
+    @classmethod
+    def validate_start_time(cls, value: datetime | None) -> datetime | None:
+        """草稿可以不填时间，但填了就必须带时区，避免发布时产生 8 小时偏移。"""
+        if value is not None and value.tzinfo is None:
+            raise ValueError("开始时间必须带时区，例如 2026-11-12T19:00:00+08:00")
+        return value
 
 
 class InvitationDraftOut(InvitationDraftIn):

@@ -19,5 +19,5 @@ def publish_invitation(
     payload: InvitationCreate,
     publisher_id: int = Depends(get_current_user_id),
 ) -> InvitationOut:
-    """发布一条招募中的邀约，发布成功后清空当前草稿。"""
+    """发布一条招募中的邀约；草稿清空由 #6 的 publish_service 负责。"""
     return publish_service.publish(payload, publisher_id)

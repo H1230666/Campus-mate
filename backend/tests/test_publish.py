@@ -113,6 +113,16 @@ def test_start_time_in_past_rejected():
     assert ("body", "start_time") in error_fields(response)
 
 
+def test_start_time_without_timezone_rejected():
+    response = client.post(
+        "/api/invitations",
+        json=make_payload(start_time="2099-01-01T19:00:00"),
+        headers=HEADERS,
+    )
+    assert response.status_code == 422
+    assert ("body", "start_time") in error_fields(response)
+
+
 def test_start_time_too_far_ahead_rejected():
     response = client.post(
         "/api/invitations", json=make_payload(start_time=future_time(days=31)), headers=HEADERS
