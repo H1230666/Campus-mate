@@ -1,8 +1,11 @@
-from backend.main import app
 from fastapi.testclient import TestClient
 
+from backend.main import app
 
 client = TestClient(app)
+
+
+
 
 def test_join_invite_auto_full():
     """测试：加入后人数达到上限，自动变为已满状态"""
