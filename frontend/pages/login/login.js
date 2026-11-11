@@ -1,5 +1,6 @@
-// 后端地址集中配置：真机调试时改成电脑的局域网 IP
-const API_BASE = "http://127.0.0.1:8000"
+const app = getApp()
+// 账号密码登录的后端接口将在 v0.2.0 提供（#2 当前只有 /api/user/wx-login），先隐藏入口
+const ACCOUNT_LOGIN_ENABLED = false
 // 个人主页（v0.2.0 上线，未创建时跳转失败有兜底提示）
 const PROFILE_PAGE = "/pages/profile/index"
 
@@ -30,6 +31,10 @@ Page({
   // 账号密码登录
   accountLogin() {
     if (this.data.loading) return
+    if (!ACCOUNT_LOGIN_ENABLED) {
+      toast("账号密码登录将在 v0.2.0 开放，请先用微信登录")
+      return
+    }
     if (!this.data.isAgree) {
       toast("请先勾选用户协议")
       return
@@ -70,7 +75,7 @@ Page({
   post(path, data) {
     this.setData({ loading: true })
     wx.request({
-      url: API_BASE + path,
+      url: app.globalData.apiBaseUrl + path,
       method: "POST",
       data,
       success: res => {
