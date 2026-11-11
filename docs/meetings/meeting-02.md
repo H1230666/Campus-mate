@@ -31,7 +31,7 @@
 - [ ] @H1230666：合并 #1 #2 #3 的 PR（#32/#33/#34），打通 Issue 闭环
 - [x] @H1230666：开启 main 分支保护并提交规则说明 `docs/branch-protection.md`
 - [x] @H1230666：发布 v0.1.0-alpha（Release Notes 见 Releases）
-- [ ] @kindly-cs：把 `miniprogram/` 内容并入 `frontend/`，并把 #5~#8 的 stacked PR 合并为一个
+- [ ] @kindly-cs：按 #25 → #26 → #27 → #28 顺序合并（一次一个 PR），合并后清理对应旧分支
 - [ ] @Gyuuu333：确认 CI 门禁在 main 上生效
 - [ ] @heijinggang：把 `d-*` 分支开成 PR；删除 `feature/d-backend-global-exception（废除` 分支
 - [ ] 全组：下次会前每人至少给他人 PR 留 1 条行内评审
