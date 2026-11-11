@@ -1,8 +1,11 @@
 {
   "pages": [
+    "pages/login/login",
     "pages/square/index",
     "pages/publish/index",
-    "pages/invitation/index"
+    "pages/invitation/index",
+    "pages/profile/index",
+    "pages/register/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
