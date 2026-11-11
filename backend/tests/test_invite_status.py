@@ -1,4 +1,4 @@
-from backend.main import app
+from main import app
 from fastapi.testclient import TestClient  # noqa: I001
 
 client = TestClient(app)
