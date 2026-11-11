@@ -6,7 +6,8 @@ class ErrorCode(int, Enum):
     PARAM_VALIDATE_ERROR = 40001
     NOT_FOUND = 404
     INTERNAL_ERROR = 50001
-
+    LOGIN_FAILED = 10001
+    
 class BusinessException(Exception):
     def __init__(self, code: ErrorCode, msg: str):
         self.code = code
