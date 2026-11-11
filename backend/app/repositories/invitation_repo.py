@@ -3,6 +3,7 @@
 当前使用进程内列表作为占位存储，便于中期联调与测试。
 后续替换为 MySQL（SQLAlchemy）时只需保持本模块对外接口不变：
     list_invitations(page, page_size, inv_type) -> (total, items)
+    get_invitation(invitation_id) -> Optional[InvitationOut]
 """
 
 from datetime import UTC, datetime, timedelta
@@ -141,3 +142,11 @@ def list_invitations(
     total = len(visible)
     start = (page - 1) * page_size
     return total, visible[start : start + page_size]
+
+
+def get_invitation(invitation_id: int) -> InvitationOut | None:
+    """按 id 查询单条邀约，不存在时返回 None。"""
+    for item in _INVITATIONS:
+        if item.id == invitation_id:
+            return item
+    return None
