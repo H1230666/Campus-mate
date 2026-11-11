@@ -13,6 +13,17 @@ const STATUS_LABELS = {
   full: '已满'
 }
 
+function pad(value) {
+  return value < 10 ? `0${value}` : `${value}`
+}
+
+function formatDateTime(value) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
 Page({
   data: {
     detail: null,
@@ -35,7 +46,8 @@ Page({
           detail: {
             ...detail,
             typeLabel: TYPE_LABELS[detail.type] || detail.type,
-            statusLabel: STATUS_LABELS[detail.status] || detail.status
+            statusLabel: STATUS_LABELS[detail.status] || detail.status,
+            startTimeText: formatDateTime(detail.start_time)
           },
           loading: false
         })

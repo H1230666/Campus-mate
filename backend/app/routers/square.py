@@ -3,7 +3,12 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from app.schemas.invitation import InvitationListResponse, InvitationOut, InvitationType
+from app.schemas.invitation import (
+    InvitationListResponse,
+    InvitationOut,
+    InvitationStatus,
+    InvitationType,
+)
 from app.services import square_service
 
 router = APIRouter(prefix="/api/invitations", tags=["square"])
@@ -14,8 +19,9 @@ def list_invitations(
     page: int = Query(default=1, ge=1, description="页码，从 1 开始"),
     page_size: int = Query(default=10, ge=1, le=50, description="每页数量，1-50"),
     inv_type: InvitationType | None = Query(default=None, alias="type"),
+    inv_status: InvitationStatus | None = Query(default=None, alias="status"),
 ) -> InvitationListResponse:
-    return square_service.list_invitations(page, page_size, inv_type)
+    return square_service.list_invitations(page, page_size, inv_type, inv_status)
 
 
 @router.get("/{invitation_id}", response_model=InvitationOut)

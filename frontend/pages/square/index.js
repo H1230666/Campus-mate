@@ -17,10 +17,18 @@ const TYPE_LABELS = {
   other: '其他'
 }
 
+const STATUSES = [
+  { key: '', label: '全部' },
+  { key: 'recruiting', label: '招募中' },
+  { key: 'full', label: '已满' }
+]
+
 Page({
   data: {
     types: TYPES,
     activeType: '',
+    statuses: STATUSES,
+    activeStatus: '',
     invitations: [],
     page: 1,
     pageSize: 10,
@@ -52,6 +60,13 @@ Page({
     this.fetchList(true)
   },
 
+  onStatusTap(e) {
+    const key = e.currentTarget.dataset.key
+    if (key === this.data.activeStatus) return
+    this.setData({ activeStatus: key })
+    this.fetchList(true)
+  },
+
   onRetry() {
     this.fetchList(true)
   },
@@ -62,6 +77,9 @@ Page({
     const params = { page, page_size: this.data.pageSize }
     if (this.data.activeType) {
       params.type = this.data.activeType
+    }
+    if (this.data.activeStatus) {
+      params.status = this.data.activeStatus
     }
     this.setData({ loading: true, error: false })
     return api

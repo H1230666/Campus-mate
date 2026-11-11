@@ -9,6 +9,16 @@
     >{{item.label}}</view>
   </scroll-view>
 
+  <view class="status-bar">
+    <view
+      wx:for="{{statuses}}"
+      wx:key="key"
+      class="status-item {{activeStatus === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onStatusTap"
+    >{{item.label}}</view>
+  </view>
+
   <view wx:if="{{loading && invitations.length === 0}}" class="state">加载中…</view>
   <view wx:elif="{{error && invitations.length === 0}}" class="state">
     <text>网络异常，请稍后重试</text>

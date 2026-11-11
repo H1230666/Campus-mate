@@ -129,7 +129,10 @@ _INVITATIONS: list[InvitationOut] = sorted(
 
 
 def list_invitations(
-    page: int, page_size: int, inv_type: InvitationType | None
+    page: int,
+    page_size: int,
+    inv_type: InvitationType | None,
+    inv_status: InvitationStatus | None = None,
 ) -> tuple[int, list[InvitationOut]]:
     """返回可见邀约（招募中/已满）的分页结果与总数。"""
     visible = [
@@ -139,6 +142,8 @@ def list_invitations(
     ]
     if inv_type is not None:
         visible = [item for item in visible if item.type == inv_type]
+    if inv_status is not None:
+        visible = [item for item in visible if item.status == inv_status]
     total = len(visible)
     start = (page - 1) * page_size
     return total, visible[start : start + page_size]

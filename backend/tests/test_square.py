@@ -49,3 +49,14 @@ def test_get_invitation_detail():
 def test_get_invitation_not_found():
     resp = client.get("/api/invitations/99999")
     assert resp.status_code == 404
+
+
+def test_filter_by_status():
+    resp = client.get("/api/invitations", params={"status": "full"})
+    assert resp.status_code == 200
+    assert all(item["status"] == "full" for item in resp.json()["list"])
+
+
+def test_filter_invalid_status_is_client_error():
+    resp = client.get("/api/invitations", params={"status": "unknown"})
+    assert 400 <= resp.status_code < 500
