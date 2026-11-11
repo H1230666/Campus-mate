@@ -1,5 +1,5 @@
-from main import app
 from fastapi.testclient import TestClient  # noqa: I001
+from main import app
 
 client = TestClient(app)
 
