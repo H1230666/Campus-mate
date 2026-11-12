@@ -297,9 +297,9 @@ Page({
       wx.showToast({ title: '请先登录后再发布', icon: 'none' })
       return
     }
-    if (res && res.statusCode === 422 && res.data && Array.isArray(res.data.detail)) {
+    if (res && res.statusCode === 422 && res.data && Array.isArray(res.data.data)) {
       const errors = {}
-      res.data.detail.forEach((item) => {
+      res.data.data.forEach((item) => {
         const last = item.loc && item.loc[item.loc.length - 1]
         const field = last === 'start_time' ? 'time' : last
         if (field) {

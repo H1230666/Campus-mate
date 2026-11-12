@@ -61,4 +61,4 @@ def test_join_auto_full_and_reject_extra():
         f"/api/invitations/{invitation_id}/join", headers={"X-User-Id": "9004"}
     )
     assert resp3.status_code == 400
-    assert "名额已满" in resp3.json()["detail"]
+    assert "名额已满" in resp3.json()["msg"]

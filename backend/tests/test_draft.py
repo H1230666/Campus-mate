@@ -91,7 +91,7 @@ def test_invalid_draft_field_rejected():
         headers=USER_B,
     )
     assert response.status_code == 422
-    assert ("body", "max_count") in {tuple(item["loc"]) for item in response.json()["detail"]}
+    assert ("body", "max_count") in {tuple(item["loc"]) for item in response.json()["data"]}
 
 
 def test_draft_requires_login():
