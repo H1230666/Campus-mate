@@ -31,7 +31,7 @@ def make_payload(**overrides):
 
 
 def error_fields(response) -> set[tuple[str, ...]]:
-    return {tuple(item["loc"]) for item in response.json()["detail"]}
+    return {tuple(item["loc"]) for item in response.json()["data"]}
 
 
 @pytest.fixture(autouse=True)
@@ -44,7 +44,7 @@ def clean_store():
 def test_publish_requires_login():
     response = client.post("/api/invitations", json=make_payload())
     assert response.status_code == 401
-    assert "未登录" in response.json()["detail"]
+    assert "未登录" in response.json()["msg"]
 
 
 def test_publish_success_returns_server_controlled_fields():
