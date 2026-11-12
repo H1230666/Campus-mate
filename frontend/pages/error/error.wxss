@@ -1,0 +1,31 @@
+/* frontend/pages/error/error.wxss */
+.error-box {
+  padding: 120rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30rpx;
+}
+.error-icon {
+  font-size: 120rpx;
+}
+.error-title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: 500;
+}
+.error-desc {
+  font-size: 28rpx;
+  color: #777;
+}
+.retry-btn {
+  width: 300rpx;
+  background: #409eff;
+  color: white;
+}
+.home-btn {
+  width: 300rpx;
+  border: 1rpx solid #409eff;
+  color: #409eff;
+  background: #fff;
+}
