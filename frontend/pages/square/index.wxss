@@ -17,6 +17,25 @@
   color: #fff;
 }
 
+.status-bar {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.status-item {
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  background-color: #fff;
+  color: #555;
+  font-size: 26rpx;
+}
+
+.status-item.active {
+  background-color: #2b6de8;
+  color: #fff;
+}
+
 .card {
   background-color: #fff;
   border-radius: 16rpx;

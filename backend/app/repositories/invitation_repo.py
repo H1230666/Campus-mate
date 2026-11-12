@@ -152,16 +152,21 @@ def _next_invitation_id() -> int:
 
 
 def list_invitations(
-    page: int, page_size: int, inv_type: InvitationType | None
+    page: int,
+    page_size: int,
+    inv_type: InvitationType | None,
+    inv_status: InvitationStatus | None = None,
 ) -> tuple[int, list[InvitationOut]]:
     """返回可见邀约（招募中/已满）的分页结果与总数。"""
-    visible = [
-        item
-        for item in _INVITATIONS
-        if item.status in (InvitationStatus.RECRUITING, InvitationStatus.FULL)
-    ]
-    if inv_type is not None:
-        visible = [item for item in visible if item.type == inv_type]
+    visible: list[InvitationOut] = []
+    for item in _INVITATIONS:
+        if item.status not in (InvitationStatus.RECRUITING, InvitationStatus.FULL):
+            continue
+        if inv_type is not None and item.type != inv_type:
+            continue
+        if inv_status is not None and item.status != inv_status:
+            continue
+        visible.append(item)
     total = len(visible)
     start = (page - 1) * page_size
     return total, visible[start : start + page_size]

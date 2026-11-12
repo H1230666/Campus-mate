@@ -9,7 +9,7 @@
     <view class="card">
       <view class="title">{{detail.title}}</view>
       <view class="row"><text class="label">类型</text><text>{{detail.typeLabel}}</text></view>
-      <view class="row"><text class="label">时间</text><text>{{detail.start_time}}</text></view>
+      <view class="row"><text class="label">时间</text><text>{{detail.startTimeText}}</text></view>
       <view class="row"><text class="label">地点</text><text>{{detail.location}}</text></view>
       <view class="row"><text class="label">人数</text><text>{{detail.current_count}}/{{detail.max_count}}</text></view>
       <view class="row"><text class="label">状态</text><text>{{detail.statusLabel}}</text></view>
