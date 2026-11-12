@@ -16,8 +16,7 @@
 - **文档**：`docs/SRS.md`、架构文档（Mermaid 架构图 / ER 图 / 7 条 ADR）、会议记录 ×2、`docs/branch-protection.md`、#49 个人工程贡献说明书
 
 ### Changed
-- 后端按 `backend/app/` 分层（router / service / repository / schemas / core），测试位于 `backend/tests/`
-- 小程序代码统一收敛到 `frontend/`
+- 目录结构收敛：删除根目录早期试点目录与旧扁平副本（`api/` `core/` `models/` `schemas/` `tests/`、根 `main.py`、早期小程序试点 `miniprogram/`），共 45 个文件、约 653 行；后端统一为 `backend/app/` 分层（router / service / repository / schemas / core），测试位于 `backend/tests/`，前端统一为 `frontend/`（#53）
 
 ### Fixed
 - 修复 JWT 密钥硬编码兜底：非 dev 环境未配置 `AUTH_SECRET` 时启动即失败
@@ -29,4 +28,3 @@
 - 数据仍为进程内内存实现，重启丢数据，未接入 MySQL
 - 微信登录未接入 jscode2session，非 dev 环境不可用
 - 邀约状态机仅实现「招募中 / 已满」两态
-- 仓库根目录仍残留早期试点目录（`api/` `core/` `models/` `schemas/` `tests/` `miniprogram/`、根 `main.py`），待后续清理
