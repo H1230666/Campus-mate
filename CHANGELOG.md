@@ -12,8 +12,7 @@
 - 用户模块：#1 模型与校验、#2 JWT 鉴权、#3 小程序登录页
 
 ### Changed
-- 移除根目录遗留的 `api/` `core/` `models/` `schemas/` `tests/` `main.py`，收敛到 `backend/`
-- 小程序目录统一为 `frontend/`
+- 目录结构收敛：删除根目录早期试点目录与旧扁平副本（`api/` `core/` `models/` `schemas/` `tests/`、根 `main.py`、早期小程序试点 `miniprogram/`），共 45 个文件、约 653 行；后端统一为 `backend/app/` 分层，前端统一为 `frontend/`（#53）
 
 ### Known Limitations
 - 数据库仍为内存模拟，未接入 MySQL
