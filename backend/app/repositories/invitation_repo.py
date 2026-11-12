@@ -199,6 +199,29 @@ def create_invitation(payload: InvitationCreate, publisher_id: int) -> Invitatio
     return item
 
 
+def join_invitation(
+    invitation_id: int, user_id: int
+) -> tuple[InvitationOut | None, str | None]:
+    """报名加入邀约。
+
+    返回 ``(邀约, 错误消息)``：
+    - 邀约不存在：``(None, "invitation not found")``；
+    - 邀约已满：``(邀约, "名额已满")``，不增加人数；
+    - 报名成功：人数 +1，达到上限时状态自动置为已满，``(邀约, None)``。
+
+    ``user_id`` 目前仅预留占位，重复报名去重留待后续接入参与者名单。
+    """
+    item = get_invitation(invitation_id)
+    if item is None:
+        return None, "invitation not found"
+    if item.status == InvitationStatus.FULL or item.current_count >= item.max_count:
+        return item, "名额已满"
+    item.current_count += 1
+    if item.current_count >= item.max_count:
+        item.status = InvitationStatus.FULL
+    return item, None
+
+
 def save_draft(publisher_id: int, payload: InvitationDraftIn) -> InvitationDraftOut:
     """保存草稿：只覆盖本次提交的字段，未提交字段保留原值。"""
     existing = _DRAFTS.get(publisher_id)
