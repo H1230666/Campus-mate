@@ -1,14 +1,23 @@
 """邀约数据访问层。
 
-当前使用进程内列表作为占位存储，便于中期联调与测试。
+当前使用进程内列表/字典作为占位存储，便于中期联调与测试。
 后续替换为 MySQL（SQLAlchemy）时只需保持本模块对外接口不变：
     list_invitations(page, page_size, inv_type) -> (total, items)
     get_invitation(invitation_id) -> Optional[InvitationOut]
+    create_invitation(payload, publisher_id) -> InvitationOut
+    save_draft / get_draft / clear_draft
 """
 
 from datetime import UTC, datetime, timedelta
 
-from app.schemas.invitation import InvitationOut, InvitationStatus, InvitationType
+from app.schemas.invitation import (
+    InvitationCreate,
+    InvitationDraftIn,
+    InvitationDraftOut,
+    InvitationOut,
+    InvitationStatus,
+    InvitationType,
+)
 
 
 def _dt(days_ago: int, hour: int) -> datetime:
@@ -127,6 +136,20 @@ _INVITATIONS: list[InvitationOut] = sorted(
     _SEED, key=lambda item: item.created_at, reverse=True
 )
 
+#: 草稿箱：一个用户同时只保留一份草稿
+_DRAFTS: dict[int, InvitationDraftOut] = {}
+
+
+def reset_store() -> None:
+    """重置内存存储（测试专用）：恢复种子数据、清空草稿。"""
+    _INVITATIONS.clear()
+    _INVITATIONS.extend(sorted(_SEED, key=lambda item: item.created_at, reverse=True))
+    _DRAFTS.clear()
+
+
+def _next_invitation_id() -> int:
+    return max((item.id for item in _INVITATIONS), default=0) + 1
+
 
 def list_invitations(
     page: int,
@@ -155,3 +178,74 @@ def get_invitation(invitation_id: int) -> InvitationOut | None:
         if item.id == invitation_id:
             return item
     return None
+
+
+def create_invitation(payload: InvitationCreate, publisher_id: int) -> InvitationOut:
+    """发布一条新邀约。
+
+    状态、当前人数、创建时间全部由服务端赋值；新邀约插入列表头部，
+    保证广场默认按创建时间倒序展示。
+    """
+    now = datetime.now(UTC)
+    item = InvitationOut(
+        id=_next_invitation_id(),
+        title=payload.title,
+        type=payload.type,
+        location=payload.location,
+        start_time=payload.start_time,
+        current_count=1,
+        max_count=payload.max_count,
+        status=InvitationStatus.RECRUITING,
+        publisher_id=publisher_id,
+        description=payload.description,
+        created_at=now,
+    )
+    _INVITATIONS.insert(0, item)
+    return item
+
+
+def join_invitation(
+    invitation_id: int, user_id: int
+) -> tuple[InvitationOut | None, str | None]:
+    """报名加入邀约。
+
+    返回 ``(邀约, 错误消息)``：
+    - 邀约不存在：``(None, "invitation not found")``；
+    - 邀约已满：``(邀约, "名额已满")``，不增加人数；
+    - 报名成功：人数 +1，达到上限时状态自动置为已满，``(邀约, None)``。
+
+    ``user_id`` 目前仅预留占位，重复报名去重留待后续接入参与者名单。
+    """
+    item = get_invitation(invitation_id)
+    if item is None:
+        return None, "invitation not found"
+    if item.status == InvitationStatus.FULL or item.current_count >= item.max_count:
+        return item, "名额已满"
+    item.current_count += 1
+    if item.current_count >= item.max_count:
+        item.status = InvitationStatus.FULL
+    return item, None
+
+
+def save_draft(publisher_id: int, payload: InvitationDraftIn) -> InvitationDraftOut:
+    """保存草稿：只覆盖本次提交的字段，未提交字段保留原值。"""
+    existing = _DRAFTS.get(publisher_id)
+    data: dict[str, object] = {}
+    if existing is not None:
+        data = existing.model_dump(exclude={"updated_at"})
+    for field in payload.model_fields_set:
+        data[field] = getattr(payload, field)
+
+    draft = InvitationDraftOut(**data, updated_at=datetime.now(UTC))
+    _DRAFTS[publisher_id] = draft
+    return draft
+
+
+def get_draft(publisher_id: int) -> InvitationDraftOut | None:
+    """查询用户当前草稿，没有则返回 None。"""
+    return _DRAFTS.get(publisher_id)
+
+
+def clear_draft(publisher_id: int) -> bool:
+    """删除草稿，返回是否确实存在（用于幂等语义）。"""
+    return _DRAFTS.pop(publisher_id, None) is not None

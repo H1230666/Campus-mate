@@ -47,4 +47,6 @@
     </view>
     <view wx:if="{{!hasMore}}" class="state state-more">没有更多了</view>
   </block>
+
+  <view class="publish-fab" bindtap="goPublish">＋ 发布搭子</view>
 </view>

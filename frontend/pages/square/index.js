@@ -40,7 +40,16 @@ Page({
   },
 
   onLoad() {
-    this.fetchList(true)
+    this.fetchList(true).finally(() => {
+      this.loaded = true
+    })
+  },
+
+  onShow() {
+    // 从发布页返回时刷新列表，让新邀约立即出现在广场
+    if (this.loaded) {
+      this.fetchList(true)
+    }
   },
 
   onPullDownRefresh() {
@@ -110,5 +119,9 @@ Page({
     wx.navigateTo({
       url: `/pages/invitation/index?id=${e.currentTarget.dataset.id}`
     })
+  },
+
+  goPublish() {
+    wx.navigateTo({ url: '/pages/publish/index' })
   }
 })

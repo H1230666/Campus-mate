@@ -2,9 +2,11 @@
   "pages": [
     "pages/login/login",
     "pages/square/index",
+    "pages/publish/index",
     "pages/invitation/index",
     "pages/profile/index",
-    "pages/register/index"
+    "pages/register/index",
+    "pages/error/error"
   ],
   "window": {
     "backgroundTextStyle": "light",
