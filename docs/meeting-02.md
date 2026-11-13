@@ -2,7 +2,7 @@
 会议主题：项目迭代进度同步、Alpha版本规划
 时间：
 参会人员：A、B、C、D
-记录人：D（heijinggang）
+记录人：D（heijinggang，1anw0n）
 
 ## 1. 本次会议目标
 1. 同步各成员当前开发任务进度
